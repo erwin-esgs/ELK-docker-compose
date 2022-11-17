@@ -1,0 +1,20 @@
+cluster.name: es-cluster
+node.name: es-1
+path.data: /data/elasticsearch
+path.logs: /data/logelas/elasticsearch
+network.host: 0.0.0.0
+discovery.seed_hosts: ["es-1", "es-2", "es-3"]
+cluster.initial_master_nodes: ["es-1"]
+http.max_content_length: 150mb
+node.roles: [ data ]
+xpack.security.enabled: false
+xpack.security.enrollment.enabled: false
+xpack.security.http.ssl:
+  enabled: false
+  keystore.path: certs/http.p12
+xpack.security.transport.ssl:
+  enabled: false
+  verification_mode: certificate
+  keystore.path: certs/transport.p12
+  truststore.path: certs/transport.p12
+

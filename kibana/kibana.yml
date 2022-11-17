@@ -1,0 +1,4 @@
+server.host: 0.0.0.0
+elasticsearch.hosts: [ http://nginx:9200 ]
+monitoring.ui.container.elasticsearch.enabled: true
+server.shutdownTimeout: "5s"
