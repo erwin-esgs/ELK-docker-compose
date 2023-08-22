@@ -1,117 +1,132 @@
 version: "3.0"
 services:
+  es_1:
+    container_name: es_1
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.0
+    privileged: true
+    user: root
+    command:
+      - /bin/bash
+      - -c
+      - |
+        sysctl -w vm.max_map_count=262144 &&
+        su elasticsearch -c bin/elasticsearch
+    environment:
+      - node.name=es_1
+      - network.host=0.0.0.0
+      - discovery.seed_hosts= ["es_1", "es_2", "es_3"]
+      - cluster.initial_master_nodes=["es_1"]
+      - ES_JAVA_OPTS=-Xms750m -Xmx750m
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+      - xpack.security.transport.ssl.verification_mode=certificate
+#    volumes:
+#        - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    networks:
+      - es_net
+      
+  es_2:
+    container_name: es_2
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.0
+    privileged: true
+    user: root
+    command:
+      - /bin/bash
+      - -c
+      - |
+        sysctl -w vm.max_map_count=262144 &&
+        su elasticsearch -c bin/elasticsearch
+    environment:
+      - node.name=es_2
+      - network.host=0.0.0.0
+      - discovery.seed_hosts= ["es_1", "es_2", "es_3"]
+      - cluster.initial_master_nodes=["es_1"]
+      - ES_JAVA_OPTS=-Xms750m -Xmx750m
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+      - xpack.security.transport.ssl.verification_mode=certificate
+#    volumes:
+#        - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    networks:
+      - es_net
+      
+  es_3:
+    container_name: es_3
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.0
+    privileged: true
+    user: root
+    command:
+      - /bin/bash
+      - -c
+      - |
+        sysctl -w vm.max_map_count=262144 &&
+        su elasticsearch -c bin/elasticsearch
+    environment:
+      - node.name=es_3
+      - network.host=0.0.0.0
+      - discovery.seed_hosts= ["es_1", "es_2", "es_3"]
+      - cluster.initial_master_nodes=["es_1"]
+      - ES_JAVA_OPTS=-Xms750m -Xmx750m
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+      - xpack.security.transport.ssl.verification_mode=certificate
+#    volumes:
+#        - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    networks:
+      - es_net
+      
   nginx:
     container_name: nginx
     image: nginx:stable-alpine
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
     networks:
-      - es-net
+      - es_net
     ports:
       - 9200:9200
-  es-1:
-    container_name: es-1
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.0
-    privileged: true
-    user: root
-    command:
-      - /bin/bash
-      - -c
-      - |
-        sysctl -w vm.max_map_count=262144 &&
-        su elasticsearch -c bin/elasticsearch
-    environment:
-      - node.name=es-1
-      - network.host=0.0.0.0
-      - discovery.seed_hosts= ["es-1", "es-2", "es-3"]
-      - cluster.initial_master_nodes=["es-1"]
-      - ES_JAVA_OPTS=-Xms750m -Xmx750m
-      - xpack.security.enabled=false
-      - xpack.security.enrollment.enabled=false
-      - xpack.security.http.ssl.enabled=false
-      - xpack.security.transport.ssl.enabled=false
-      - xpack.security.transport.ssl.verification_mode=certificate
-#    volumes:
-#        - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-    networks:
-      - es-net
-  es-2:
-    container_name: es-2
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.0
-    privileged: true
-    user: root
-    command:
-      - /bin/bash
-      - -c
-      - |
-        sysctl -w vm.max_map_count=262144 &&
-        su elasticsearch -c bin/elasticsearch
-    environment:
-      - node.name=es-2
-      - network.host=0.0.0.0
-      - discovery.seed_hosts= ["es-1", "es-2", "es-3"]
-      - cluster.initial_master_nodes=["es-1"]
-      - ES_JAVA_OPTS=-Xms750m -Xmx750m
-      - xpack.security.enabled=false
-      - xpack.security.enrollment.enabled=false
-      - xpack.security.http.ssl.enabled=false
-      - xpack.security.transport.ssl.enabled=false
-      - xpack.security.transport.ssl.verification_mode=certificate
-#    volumes:
-#        - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-    networks:
-      - es-net
-  es-3:
-    container_name: es-3
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.0
-    privileged: true
-    user: root
-    command:
-      - /bin/bash
-      - -c
-      - |
-        sysctl -w vm.max_map_count=262144 &&
-        su elasticsearch -c bin/elasticsearch
-    environment:
-      - node.name=es-3
-      - network.host=0.0.0.0
-      - discovery.seed_hosts= ["es-1", "es-2", "es-3"]
-      - cluster.initial_master_nodes=["es-1"]
-      - ES_JAVA_OPTS=-Xms750m -Xmx750m
-      - xpack.security.enabled=false
-      - xpack.security.enrollment.enabled=false
-      - xpack.security.http.ssl.enabled=false
-      - xpack.security.transport.ssl.enabled=false
-      - xpack.security.transport.ssl.verification_mode=certificate
-#    volumes:
-#        - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-    networks:
-      - es-net
+    depends_on:
+      - es_1  
+      
   logstash:
     container_name: logstash
-    image: docker.elastic.co/logstash/logstash:8.5.0
+    image: docker.elastic.co/logstash/logstash:8.6.0
     volumes:
-      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,Z
       - ./logstash/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./logstash/pipeline1:/usr/share/logstash/pipeline:ro
+      - ./logstash/mapping1.json:/usr/share/logstash/config/mapping1.json:ro
     #command: 
     #  - /usr/share/logstash/bin/logstash -f /usr/share/logstash/pipeline/logstash.api.conf
     environment:
-      - LS_JAVA_OPTS=-Xmx256m -Xms256m
+      - LS_JAVA_OPTS=-Xmx6g -Xms256m
     networks:
-      - es-net
+      - es_net
     depends_on:
-      - es-1
+      - es_1
+
   kibana:
     container_name: kibana
-    image: docker.elastic.co/kibana/kibana:8.5.0
+    image: docker.elastic.co/kibana/kibana:8.6.0
     volumes:
-      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
     networks:
-      - es-net
+      - es_net
     depends_on:
-      - es-1
+      - nginx
     ports:
       - 5601:5601
+    #environment:
+    #  - xpack.security.enabled=false
+    #  - xpack.security.enrollment.enabled=false
+    #  - xpack.security.http.ssl.enabled=false
+    #  - xpack.security.transport.ssl.enabled=false
+    #  - xpack.reporting.roles.enabled=false
+      
 networks:
-  es-net:
+  es_net:
     driver: bridge

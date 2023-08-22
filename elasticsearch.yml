@@ -11,10 +11,10 @@ xpack.security.enabled: false
 xpack.security.enrollment.enabled: false
 xpack.security.http.ssl:
   enabled: false
-  keystore.path: certs/http.p12
+  #keystore.path: certs/http.p12
 xpack.security.transport.ssl:
   enabled: false
-  verification_mode: certificate
-  keystore.path: certs/transport.p12
-  truststore.path: certs/transport.p12
+  #verification_mode: certificate
+  #keystore.path: certs/transport.p12
+  #truststore.path: certs/transport.p12
 
