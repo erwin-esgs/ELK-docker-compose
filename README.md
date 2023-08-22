@@ -14,5 +14,5 @@ Open : localhost:5601
 ## What inside?
 - Elasticsearch (3 node for cluster)
 - NGINX (as load-balancer to nodes)
-- Logstash (Input from API : https://randomuser.me/api/ )
+- Logstash (Input from random longlat )
 - Kibana (for display data)
